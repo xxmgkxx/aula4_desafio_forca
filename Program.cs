@@ -118,10 +118,10 @@ void Jogar(string segredo, Random rng)
 				Console.WriteLine($"💀 Fim de jogo! A palavra era {segredo}.");
 }
 
-static string EscolherPalavra(List<string> lista, Random rng) =>
+string EscolherPalavra(List<string> lista, Random rng) =>
         lista[rng.Next(lista.Count)];
 
-static bool Revelar(char chute, string segredo, char[] estado)
+bool Revelar(char chute, string segredo, char[] estado)
 {
 		bool acertou = false;
 		for (int i = 0; i < segredo.Length; i++)
@@ -133,10 +133,10 @@ static bool Revelar(char chute, string segredo, char[] estado)
 		return acertou;
 }
 
-static bool Completa(char[] estado) =>
+bool Completa(char[] estado) =>
 		Array.IndexOf(estado, '_') == -1;
 
-static void ContinuePrompt()
+void ContinuePrompt()
 {
 		Console.Write("Pressione ENTER...");
 		while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
