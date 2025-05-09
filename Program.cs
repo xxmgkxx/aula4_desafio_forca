@@ -45,4 +45,99 @@ Podemos escrever alguns métodos para ajudar:
 Aula anterior: https://github.com/xxmgkxx/aula3_cshapr_puc
 dotnet new console -n Forca
 cd Forca
+
+
+
+https://github.com/xxmgkxx/aula4_desafio_forca
 */
+
+List<string> DIC = new(){
+	"CADERNO", "LARANJA", "PROGRAMACAO", "DESAFIO",
+	"JOGADOR", "ESTUDANTE", "ALGORITMO", "COMPUTADOR",
+	"MOUSE", "TECLADO"
+};
+
+var rng = new Random();
+while (true)
+{
+		string segredo = EscolherPalavra(DIC, rng);
+		Jogar(segredo, rng);
+
+		Console.Write("\nJogar de novo? (S/N): ");
+		if (Console.ReadKey(true).Key != ConsoleKey.S) break;
+		Console.Clear();
+}
+void Jogar(string segredo, Random rng)
+{
+		int errosRestantes = 6;
+		char[] estado = new string('_', segredo.Length).ToCharArray();
+		var tentadas = new List<char>();
+
+		while (errosRestantes > 0 && !Completa(estado))
+		{
+				Console.Clear();
+				Console.WriteLine("=== Jogo da Forca ===");
+				Console.WriteLine($"Palavra: {string.Join(" ", estado)}");
+				Console.WriteLine($"Erros restantes: {errosRestantes}");
+				if (tentadas.Count > 0)
+						Console.WriteLine($"Tentadas: {string.Join(", ", tentadas)}");
+
+				Console.Write("\nDigite uma letra: ");
+				ConsoleKeyInfo k = Console.ReadKey(true);
+				char chute = char.ToUpper(k.KeyChar);
+
+				if (!char.IsLetter(chute))
+				{
+						Console.WriteLine(" → Digite apenas letras.");
+						ContinuePrompt();
+						continue;
+				}
+				if (tentadas.Contains(chute))
+				{
+						Console.WriteLine(" → Já tentou essa letra.");
+						ContinuePrompt();
+						continue;
+				}
+
+				tentadas.Add(chute);
+
+				bool acerto = Revelar(chute, segredo, estado);
+				Console.WriteLine(acerto
+						? $" ✔ Boa! A letra {chute} existe."
+						: $" ✖ A letra {chute} não existe.");
+				if (!acerto) errosRestantes--;
+
+				ContinuePrompt();
+		}
+
+		Console.Clear();
+		Console.WriteLine(string.Join(" ", estado));
+		if (Completa(estado))
+				Console.WriteLine($"🏆 Parabéns! Você venceu com {6 - errosRestantes} erro(s).");
+		else
+				Console.WriteLine($"💀 Fim de jogo! A palavra era {segredo}.");
+}
+
+static string EscolherPalavra(List<string> lista, Random rng) =>
+        lista[rng.Next(lista.Count)];
+
+static bool Revelar(char chute, string segredo, char[] estado)
+{
+		bool acertou = false;
+		for (int i = 0; i < segredo.Length; i++)
+				if (segredo[i] == chute)
+				{
+						estado[i] = chute;
+						acertou = true;
+				}
+		return acertou;
+}
+
+static bool Completa(char[] estado) =>
+		Array.IndexOf(estado, '_') == -1;
+
+static void ContinuePrompt()
+{
+		Console.Write("Pressione ENTER...");
+		while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+}
